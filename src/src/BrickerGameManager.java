@@ -9,10 +9,7 @@ import danogl.gui.*;
 import danogl.gui.rendering.Renderable;
 import danogl.util.Counter;
 import danogl.util.Vector2;
-import src.gameobjects.Ball;
-import src.gameobjects.Brick;
-import src.gameobjects.GraphicLifeCounter;
-import src.gameobjects.Paddle;
+import src.gameobjects.*;
 
 import java.util.Random;
 
@@ -31,11 +28,12 @@ public class BrickerGameManager extends GameManager {
     private static final int BRICKS_PER_COLUMN = 5;
     private static final float BRICK_HEIGHT = 15;
     private static final int MIN_DIST_FROM_EDGE = 10;
-    private static final float G_COUNTER_X = 10;
-    private static final float G_COUNTER_Y_FROM_BOTTOM = 60;
-    private static final float G_COUNTER_HEIGHT = 15;
-    private static final float G_COUNTER_WIDTH = 15;
+    private static final float COUNTERS_X = 10;
+    private static final float G_COUNTER_Y_FROM_BTM = 60;
+    private static final float COUNTERS_HEIGHT = 15;
+    private static final float COUNTERS_WIDTH = 15;
     private static final int NUM_LIVES = 2;
+    private static final float N_COUNTER_Y_FROM_BTM = 90;
     private static int BORDER_WIDTH = 5;
     private static final float BRICK_BORDER_CLEARANCE = 5;
     private static final float BRICK_BRICK_CLEARANCE = 1;
@@ -89,13 +87,21 @@ public class BrickerGameManager extends GameManager {
         initializePaddle();
         initializeBricks();
         initializeGraphicCounter();
+        initializeNumCounter();
+    }
+
+    private void initializeNumCounter() {
+        NumericLifeCounter numericLifeCounter = new NumericLifeCounter(livesCounter, Vector2.of(COUNTERS_X,
+                windowDimensions.y() - N_COUNTER_Y_FROM_BTM), Vector2.of(COUNTERS_WIDTH, COUNTERS_HEIGHT),
+                gameObjects());
+        gameObjects().addGameObject(numericLifeCounter);
     }
 
     private void initializeGraphicCounter() {
         Renderable widgetRenderable = imageReader.readImage("assets/heart.png", true);
-        GraphicLifeCounter graphicLifeCounter = new GraphicLifeCounter(Vector2.of(G_COUNTER_X,
-            windowDimensions.y() - G_COUNTER_Y_FROM_BOTTOM),
-                Vector2.of(G_COUNTER_HEIGHT, G_COUNTER_WIDTH), livesCounter, widgetRenderable,
+        GraphicLifeCounter graphicLifeCounter = new GraphicLifeCounter(Vector2.of(COUNTERS_X,
+            windowDimensions.y() - G_COUNTER_Y_FROM_BTM),
+                Vector2.of(COUNTERS_WIDTH, COUNTERS_HEIGHT), livesCounter, widgetRenderable,
                 gameObjects(), NUM_LIVES);
         gameObjects().addGameObject(graphicLifeCounter);
     }

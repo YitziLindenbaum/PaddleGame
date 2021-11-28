@@ -14,13 +14,13 @@ import java.awt.*;
  */
 public class GraphicLifeCounter extends GameObject {
 
-    private static final float ICON_CLEARANCE = 5;
+    private static final float ICON_CLEARANCE = 5; // distance between life icons
     private final Vector2 widgetTopLeftCorner;
     private final Vector2 widgetDimensions;
     private final Counter livesCounter;
     private final Renderable widgetRenderable;
     private final GameObjectCollection gameObjectsCollection;
-    private final int numOfLives;
+    private final int numOfLives; // at beginning of game
     private int curLives;
     private GameObject[] widgets = null;
 
@@ -50,6 +50,9 @@ public class GraphicLifeCounter extends GameObject {
         initializeCounter();
     }
 
+    /**
+     * Method to create and place expected number of counter icons.
+     */
     private void initializeCounter() {
         for (int i = 0; i < numOfLives; i++) {
             Vector2 increment = Vector2.of(i * (widgetDimensions.x() + ICON_CLEARANCE), 0);
@@ -60,10 +63,14 @@ public class GraphicLifeCounter extends GameObject {
         }
     }
 
+    /**
+     * To be called at every frame.
+     * @param deltaTime See parent function.
+     */
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
-        if (livesCounter.value() != curLives) {
+        if (livesCounter.value() != curLives) { // number of lives has changed.
             gameObjectsCollection.removeGameObject(widgets[curLives - 1], Layer.BACKGROUND);
             curLives = livesCounter.value();
         }

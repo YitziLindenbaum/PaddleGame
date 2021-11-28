@@ -9,6 +9,9 @@ import danogl.util.Vector2;
 
 import java.awt.*;
 
+/**
+ * Represents numeric life counter.
+ */
 public class NumericLifeCounter extends GameObject {
 
     private Counter livesCounter;
@@ -16,6 +19,13 @@ public class NumericLifeCounter extends GameObject {
     private int curLives;
     private TextRenderable livesRenderable;
 
+    /**
+     * Create a new numeric life counter object.
+     * @param livesCounter Game's global life counter.
+     * @param topLeftCorner of Counter in window.
+     * @param dimensions in pixels.
+     * @param gameObjectCollection of global Game.
+     */
     public NumericLifeCounter(Counter livesCounter, Vector2 topLeftCorner, Vector2 dimensions,
                        GameObjectCollection gameObjectCollection) {
         super(topLeftCorner, dimensions, null);
@@ -30,9 +40,13 @@ public class NumericLifeCounter extends GameObject {
 
     }
 
+    /**
+     * Called once per frame.
+     * @param deltaTime See parent.
+     */
     public void update(float deltaTime) {
         super.update(deltaTime);
-        if (livesCounter.value() != curLives) {
+        if (livesCounter.value() != curLives) { // number of lives has changed.
             livesRenderable.setString(Integer.toString(livesCounter.value()));
             curLives = livesCounter.value();
         }

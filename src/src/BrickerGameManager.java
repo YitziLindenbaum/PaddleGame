@@ -90,6 +90,9 @@ public class BrickerGameManager extends GameManager {
         initializeNumCounter();
     }
 
+    /**
+     * Creates and places numeric life counter.
+     */
     private void initializeNumCounter() {
         NumericLifeCounter numericLifeCounter = new NumericLifeCounter(livesCounter, Vector2.of(COUNTERS_X,
                 windowDimensions.y() - N_COUNTER_Y_FROM_BTM), Vector2.of(COUNTERS_WIDTH, COUNTERS_HEIGHT),
@@ -97,6 +100,9 @@ public class BrickerGameManager extends GameManager {
         gameObjects().addGameObject(numericLifeCounter);
     }
 
+    /**
+     * Creates and places graphic life counter.
+     */
     private void initializeGraphicCounter() {
         Renderable widgetRenderable = imageReader.readImage("assets/heart.png", true);
         GraphicLifeCounter graphicLifeCounter = new GraphicLifeCounter(Vector2.of(COUNTERS_X,

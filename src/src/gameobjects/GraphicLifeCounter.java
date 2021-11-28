@@ -21,7 +21,8 @@ public class GraphicLifeCounter extends GameObject {
     private final Renderable widgetRenderable;
     private final GameObjectCollection gameObjectsCollection;
     private final int numOfLives;
-    private GameObject[] lives = null;
+    private int curLives;
+    private GameObject[] widgets = null;
 
     /**
      *
@@ -44,23 +45,28 @@ public class GraphicLifeCounter extends GameObject {
         this.widgetRenderable = widgetRenderable;
         this.gameObjectsCollection = gameObjectsCollection;
         this.numOfLives = numOfLives;
-        lives = new GameObject[numOfLives];
+        widgets = new GameObject[numOfLives];
+        curLives = livesCounter.value();
+        initializeCounter();
     }
 
-//    private void initializeCounter() {
-//
-//        for (int i = 0; i < numOfLives; i++) {
-//            Vector2 increment = Vector2.of(i * (widgetDimensions.x() + ICON_CLEARANCE), 0);
-//            GameObject widget = new GameObject(widgetTopLeftCorner.add(increment), widgetDimensions,
-//                    widgetRenderable);
-//            gameObjectsCollection.addGameObject(widget, Layer.BACKGROUND); // add to background to avoid
-//                                                                            // collisions
-//        }
-//    }
+    private void initializeCounter() {
+        for (int i = 0; i < numOfLives; i++) {
+            Vector2 increment = Vector2.of(i * (widgetDimensions.x() + ICON_CLEARANCE), 0);
+            widgets[i] = new GameObject(widgetTopLeftCorner.add(increment), widgetDimensions,
+                    widgetRenderable);
+            gameObjectsCollection.addGameObject(widgets[i], Layer.BACKGROUND); // add to background to avoid
+                                                                            // collisions
+        }
+    }
 
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
-        int displayedLives = 0;
+        if (livesCounter.value() != curLives) {
+            gameObjectsCollection.removeGameObject(widgets[curLives - 1], Layer.BACKGROUND);
+            curLives = livesCounter.value();
+        }
     }
+
 }

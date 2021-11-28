@@ -11,6 +11,7 @@ import danogl.util.Counter;
 import danogl.util.Vector2;
 import src.gameobjects.Ball;
 import src.gameobjects.Brick;
+import src.gameobjects.GraphicLifeCounter;
 import src.gameobjects.Paddle;
 
 import java.util.Random;
@@ -30,6 +31,11 @@ public class BrickerGameManager extends GameManager {
     private static final int BRICKS_PER_COLUMN = 5;
     private static final float BRICK_HEIGHT = 15;
     private static final int MIN_DIST_FROM_EDGE = 10;
+    private static final float G_COUNTER_X = 10;
+    private static final float G_COUNTER_Y_FROM_BOTTOM = 60;
+    private static final float G_COUNTER_HEIGHT = 15;
+    private static final float G_COUNTER_WIDTH = 15;
+    private static final int NUM_LIVES = 2;
     private static int BORDER_WIDTH = 5;
     private static final float BRICK_BORDER_CLEARANCE = 5;
     private static final float BRICK_BRICK_CLEARANCE = 1;
@@ -41,6 +47,7 @@ public class BrickerGameManager extends GameManager {
     private UserInputListener inputListener;
     private WindowController windowController;
     private Counter brickCounter = new Counter();
+    private Counter livesCounter = new Counter();
 
 
     /**
@@ -54,7 +61,6 @@ public class BrickerGameManager extends GameManager {
         float totalBricksWidth = windowDimensions.x() - (2 * (BORDER_WIDTH + BRICK_BORDER_CLEARANCE)) -
                 ((BRICKS_PER_ROW - 1) * BRICK_BRICK_CLEARANCE);
         brickWidth = totalBricksWidth / BRICKS_PER_ROW;
-        brickCounter.reset();
     }
 
     /**
@@ -69,6 +75,7 @@ public class BrickerGameManager extends GameManager {
                                UserInputListener inputListener, WindowController windowController) {
         super.initializeGame(imageReader, soundReader, inputListener, windowController);
 
+        livesCounter.increaseBy(NUM_LIVES);
         this.imageReader = imageReader;
         this.soundReader = soundReader;
         this.inputListener = inputListener;
@@ -81,6 +88,16 @@ public class BrickerGameManager extends GameManager {
         initializeBall();
         initializePaddle();
         initializeBricks();
+        initializeGraphicCounter();
+    }
+
+    private void initializeGraphicCounter() {
+        Renderable widgetRenderable = imageReader.readImage("assets/heart.png", true);
+        GraphicLifeCounter graphicLifeCounter = new GraphicLifeCounter(Vector2.of(G_COUNTER_X,
+            windowDimensions.y() - G_COUNTER_Y_FROM_BOTTOM),
+                Vector2.of(G_COUNTER_HEIGHT, G_COUNTER_WIDTH), livesCounter, widgetRenderable,
+                gameObjects(), NUM_LIVES);
+        gameObjects().addGameObject(graphicLifeCounter);
     }
 
     /**
@@ -90,20 +107,33 @@ public class BrickerGameManager extends GameManager {
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
+        checkLifeLost();
         checkGameEnd();
     }
 
     /**
      * Checks if the game has ended based on the game's logic and communicates with user accordingly.
      */
-    private void checkGameEnd() {
+    private void checkLifeLost() {
         float ballHeight = ball.getCenter().y();
-        String prompt = "";
         if (ballHeight > windowDimensions.y()) { // ball has passed paddle on bottom of screen.
-            prompt = "You lose!";
+            livesCounter.decrement();
+            if (livesCounter.value() == 0) {
+                return;
+            }
+            String prompt = "You lost a life!";
+            windowController.showMessageBox(prompt);
+            ball.setCenter(windowDimensions.mult(0.5f));
         }
+    }
+
+    private void checkGameEnd(){
+        String prompt = "";
         if (brickCounter.value() == 0) {
             prompt = "You win!";
+        }
+        if (livesCounter.value() == 0) {
+            prompt = "You lose!";
         }
         if (!(prompt.isEmpty())) {
             prompt += " Play again?";

@@ -7,6 +7,9 @@ import danogl.util.Vector2;
 
 import java.awt.event.KeyEvent;
 
+/**
+ * Represents the paddle in Bricker game.
+ */
 public class Paddle extends GameObject {
     private static final float MOVEMENT_SPEED = 500;
     private final UserInputListener inputListener;
@@ -14,14 +17,16 @@ public class Paddle extends GameObject {
     private int minDistanceFromEdge;
 
     /**
-     * Construct a new GameObject instance.
+     * Construct a new Paddle instance.
      *
      * @param topLeftCorner Position of the object, in window coordinates (pixels).
      *                      Note that (0,0) is the top-left corner of the window.
      * @param dimensions    Width and height in window coordinates.
      * @param renderable    The renderable representing the object. Can be null, in which case object will not
-     *                     be rendered
-     * @param screenWidth
+     *                      be rendered.
+     * @param inputListener Object to read input from keyboard.
+     * @param windowDimensions Vector of dimensions of window housing game.
+     * @param minDistanceFromEdge Minimum distance from edge paddle is to be allowed on the sides.
      */
     public Paddle(Vector2 topLeftCorner, Vector2 dimensions, Renderable renderable,
                   UserInputListener inputListener, Vector2 windowDimensions, int minDistanceFromEdge) {
@@ -31,6 +36,10 @@ public class Paddle extends GameObject {
         this.minDistanceFromEdge = minDistanceFromEdge;
     }
 
+    /**
+     * Called once per frame.
+     * @param deltaTime The time, in seconds, that passed since the last invocation of this method.
+     */
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);

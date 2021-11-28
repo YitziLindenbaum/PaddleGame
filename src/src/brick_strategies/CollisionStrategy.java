@@ -5,6 +5,9 @@ import danogl.collisions.GameObjectCollection;
 import danogl.collisions.Layer;
 import danogl.util.Counter;
 
+/**
+ *
+ */
 public class CollisionStrategy {
 
     private GameObjectCollection gameObjectCollection;

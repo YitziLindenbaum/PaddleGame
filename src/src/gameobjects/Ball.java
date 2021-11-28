@@ -6,6 +6,9 @@ import danogl.gui.Sound;
 import danogl.gui.rendering.Renderable;
 import danogl.util.Vector2;
 
+/**
+ * Represents a ball in the Bricker game.
+ */
 public class Ball extends GameObject {
     private Sound collisionSound;
 
@@ -24,6 +27,11 @@ public class Ball extends GameObject {
         this.collisionSound = collisionSound;
     }
 
+    /**
+     * Handles collisions with other objects.
+     * @param other Other object in collision.
+     * @param collision Collision object representing graphic collision.
+     */
     @Override
     public void onCollisionEnter(GameObject other, Collision collision) {
         super.onCollisionEnter(other, collision);

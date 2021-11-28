@@ -15,9 +15,12 @@ import src.gameobjects.Paddle;
 
 import java.util.Random;
 
-
+/**
+ * Principle class of Bricker game.
+ */
 public class BrickerGameManager extends GameManager {
 
+    // constant distances are in numbers of pixels
     private static final float BALL_SIZE = 20;
     private static final float BALL_SPEED = 200;
     private static final float PADDLE_SIZE_Y = 15;
@@ -40,6 +43,11 @@ public class BrickerGameManager extends GameManager {
     private Counter brickCounter = new Counter();
 
 
+    /**
+     * Constructor for Bricker Game Manager.
+     * @param windowTitle Title to be given to window that houses game.
+     * @param windowDimensions Dimensions of window to house game.
+     */
     public BrickerGameManager(String windowTitle, Vector2 windowDimensions) {
         super(windowTitle, windowDimensions);
         this.windowDimensions = windowDimensions;
@@ -49,6 +57,13 @@ public class BrickerGameManager extends GameManager {
         brickCounter.reset();
     }
 
+    /**
+     * Creates and places all the necessary objects to begin Bricker game.
+     * @param imageReader object to process images that will compose game objects.
+     * @param soundReader object to process sound files that will compose game sounds.
+     * @param inputListener object to process user input.
+     * @param windowController object to control dialogue windows etc.
+     */
     @Override
     public void initializeGame(ImageReader imageReader, SoundReader soundReader,
                                UserInputListener inputListener, WindowController windowController) {
@@ -68,16 +83,23 @@ public class BrickerGameManager extends GameManager {
         initializeBricks();
     }
 
+    /**
+     * Function to be run at every iteration of game.
+     * @param deltaTime The time, in seconds, that passed since the last invocation of this method.
+     */
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
         checkGameEnd();
     }
 
+    /**
+     * Checks if the game has ended based on the game's logic and communicates with user accordingly.
+     */
     private void checkGameEnd() {
         float ballHeight = ball.getCenter().y();
         String prompt = "";
-        if (ballHeight > windowDimensions.y()) {
+        if (ballHeight > windowDimensions.y()) { // ball has passed paddle on bottom of screen.
             prompt = "You lose!";
         }
         if (brickCounter.value() == 0) {
@@ -93,20 +115,28 @@ public class BrickerGameManager extends GameManager {
         }
     }
 
+    /**
+     * Creates and places brick objects.
+     */
     private void initializeBricks() {
 
-        float brickLocY = BORDER_WIDTH + BRICK_BORDER_CLEARANCE;
+        float brickLocY = BORDER_WIDTH + BRICK_BORDER_CLEARANCE; // y-value of location of top row bricks.
         for (int i = 0; i < BRICKS_PER_COLUMN; i++) {
-            float brickLocX = BORDER_WIDTH + BRICK_BORDER_CLEARANCE;
+            float brickLocX = BORDER_WIDTH + BRICK_BORDER_CLEARANCE; // x-value of loc of left column bricks.
             for (int j = 0; j < BRICKS_PER_ROW; j++) {
                 initializeSingleBrick(brickLocX, brickLocY);
-                brickLocX += brickWidth + BRICK_BRICK_CLEARANCE;
+                brickLocX += brickWidth + BRICK_BRICK_CLEARANCE; // increment to next column
             }
-            brickLocY += BRICK_HEIGHT + BRICK_BRICK_CLEARANCE;
+            brickLocY += BRICK_HEIGHT + BRICK_BRICK_CLEARANCE; // increment to next row
         }
 
     }
 
+    /**
+     * Creates and places a single brick in the given location.
+     * @param brickLocX x-value of top-left corner of brick to be created.
+     * @param brickLocY y-value of top-left corner of brick to be created.
+     */
     private void initializeSingleBrick(float brickLocX, float brickLocY) {
         GameObject brick = new Brick(Vector2.of(brickLocX, brickLocY),
                 Vector2.of(brickWidth, BRICK_HEIGHT),
@@ -116,6 +146,9 @@ public class BrickerGameManager extends GameManager {
         brickCounter.increment();
     }
 
+    /**
+     * Creates and places background picture.
+     */
     private void initializeBackground() {
         GameObject background = new GameObject(Vector2.ZERO, windowDimensions,
                 imageReader.readImage("assets/DARK_BG2_small.jpeg", false));
@@ -124,6 +157,9 @@ public class BrickerGameManager extends GameManager {
     }
 
 
+    /**
+     * Creates and places ball object.
+     */
     private void initializeBall() {
         Renderable ballImage = imageReader.readImage("assets/ball.png", true);
         Sound collisionSound = soundReader.readSound("assets/blop_cut_silenced.wav");
@@ -132,6 +168,8 @@ public class BrickerGameManager extends GameManager {
 
         float ballVelX = BALL_SPEED;
         float ballVelY = BALL_SPEED;
+
+        // ball starts with randomly chosen diagonal velocity.
         Random rand = new Random();
         if (rand.nextBoolean()) {
             ballVelX *= -1;
@@ -140,10 +178,16 @@ public class BrickerGameManager extends GameManager {
             ballVelY *= -1;
         }
         ball.setVelocity(Vector2.of(ballVelX, ballVelY));
+
+        // place ball in center
         ball.setCenter(windowDimensions.mult(0.5f));
         gameObjects().addGameObject(ball);
     }
 
+
+    /**
+     * Creates and places paddle object.
+     */
     private void initializePaddle() {
         Renderable paddleImage = imageReader.readImage("assets/paddle.png", true);
         Paddle paddle = new Paddle(Vector2.ZERO, Vector2.of(PADDLE_SIZE_X, PADDLE_SIZE_Y), paddleImage,
@@ -154,10 +198,14 @@ public class BrickerGameManager extends GameManager {
         gameObjects().addGameObject(paddle);
     }
 
+
+    /**
+     * Creates and places border that keeps ball in window.
+     */
     private void initializeWalls() {
         GameObject wallLeft = new GameObject(Vector2.ZERO, Vector2.of(BORDER_WIDTH, windowDimensions.y()),
                 null);
-        GameObject wallRight = new GameObject(Vector2.of(windowDimensions.x(), 0),
+        GameObject wallRight = new GameObject(Vector2.of(windowDimensions.x() - BORDER_WIDTH, 0),
                 Vector2.of(BORDER_WIDTH, windowDimensions.y()), null);
         GameObject wallTop = new GameObject(Vector2.ZERO,
                 Vector2.of(windowDimensions.x(), BORDER_WIDTH), null);
@@ -167,7 +215,10 @@ public class BrickerGameManager extends GameManager {
         gameObjects().addGameObject(wallTop);
     }
 
-
+    /**
+     * Main function to start game.
+     * @param args
+     */
     public static void main(String[] args) {
         new BrickerGameManager("Bricker",
                 new Vector2(700, 500)).run();

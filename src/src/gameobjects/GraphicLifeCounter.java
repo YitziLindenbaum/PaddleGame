@@ -9,6 +9,9 @@ import danogl.util.Vector2;
 
 import java.awt.*;
 
+/**
+ * Represents the graphic life-counter in the Bricker game.
+ */
 public class GraphicLifeCounter extends GameObject {
 
     private static final float ICON_CLEARANCE = 5;
@@ -20,6 +23,16 @@ public class GraphicLifeCounter extends GameObject {
     private final int numOfLives;
     private GameObject[] lives = null;
 
+    /**
+     *
+     * @param widgetTopLeftCorner Position of the widget, in window coordinates (pixels).
+     * @param widgetDimensions Width and height in window coordinates.
+     * @param livesCounter Counter object to track number of lives.
+     * @param widgetRenderable The renderable representing the widget. Can be null, in which case the
+     *                         widget will not be rendered.
+     * @param gameObjectsCollection Object representing the collection of objects in the game.
+     * @param numOfLives Number of lives player begins with in game.
+     */
     public GraphicLifeCounter(Vector2 widgetTopLeftCorner, Vector2 widgetDimensions, Counter livesCounter,
                               Renderable widgetRenderable, GameObjectCollection gameObjectsCollection,
                               int numOfLives) {
